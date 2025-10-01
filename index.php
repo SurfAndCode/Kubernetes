@@ -126,7 +126,7 @@
                         </div>
                         <div class="media-body">
                             <a href="#"><?php echo $row['Name'] ?></a>
-                            <p>Purchase <?php echo $row['Name'] ?> at the lowest price <span><?php echo $row['Price'] ?>$</span></p>
+                            <p>Purchase <?php echo $row['Name'] ?> at the lowest price <span>$<?php echo $row['Price'] ?></span></p>
                         </div>
                     </div>
                 </div>
