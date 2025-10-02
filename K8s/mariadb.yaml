@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: ecom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.11
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - secretRef:
+                name: mariadb-secret   # must exist in namespace 'ecom'
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d
+          # (Optional) give the DB time to start before liveness kicks in
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+          limits:
+          cpu: "1"
+          memory: "1Gi"
+          startupProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            failureThreshold: 12
+          readinessProbe:
+            exec:
+              # use sh (always present) and explicit host to avoid socket issues
+              command: ["sh", "-c", "mysqladmin ping -h 127.0.0.1 -u$MARIADB_USER -p$MARIADB_PASSWORD"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: mariadb-pvc     # must exist in namespace 'ecom'
+        - name: init-sql
+          configMap:
+            name: mariadb-init-sql     # must exist in namespace 'ecom'
+            items:
+              - key: db-load-script.sql
+                path: db-load-script.sql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: ecom
+spec:
+  type: ClusterIP
+  selector:
+    app: mariadb
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
