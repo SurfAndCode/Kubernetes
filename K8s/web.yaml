@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ecom-web
-          image: surf4ever/ecom-web:v2
+          image: surf4ever/ecom-web:v3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
