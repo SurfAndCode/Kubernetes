@@ -1,0 +1,6 @@
+/* css/dark.css */
+:root { color-scheme: dark; }
+body { background: #111; color: #eee; }
+a { color: #7ab7ff; }
+.card { background: #1b1b1b; border: 1px solid #2a2a2a; }
+.btn { background: #222; color: #fff; }

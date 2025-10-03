@@ -20,6 +20,11 @@ spec:
           ports:
             - containerPort: 80
           env:
+            - name: FEATURE_DARK_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: feature-toggle-config
+                  key: FEATURE_DARK_MODE
             - name: DB_HOST
               value: mysql-service
             - name: DB_NAME

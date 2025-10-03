@@ -1,3 +1,6 @@
+<?php
+$darkMode = strtolower(getenv('FEATURE_DARK_MODE') ?: 'false') === 'true';
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,6 +24,9 @@
 
         <!-- Theme style CSS -->
         <link href="css/style.css" rel="stylesheet">
+        <?php if ($darkMode): ?>
+            <link rel="stylesheet" href="/css/dark.css">
+        <?php endif; ?>
 <!--        <link href="css/responsive.css" rel="stylesheet">  -->
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
